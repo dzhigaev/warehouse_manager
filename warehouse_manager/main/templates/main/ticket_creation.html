@@ -1,0 +1,12 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% for field in form %}
+    <p>{{field.label}}</p>
+    {{field}}
+    {% endfor %}
+    <input class="success-btn" type="submit" value="Save">
+</form>
+{% endblock content %}

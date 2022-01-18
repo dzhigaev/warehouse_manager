@@ -1,0 +1,23 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block content %}
+<form method="get" action="">
+    {{ form.as_p }}
+    <input class="info-btn" type="submit" value="Search">
+</form>
+<a href="{% url 'trip_creation' %}" class="secondary-btn">Skip</a>
+<br>
+<br>
+<form>
+{% for manifest in manifest_list %}
+<input class="info-btn" type="submit", value="{{manifest}}">
+{% endfor %}
+
+</form>
+<form method="post" action="">
+    {{ post_form.as_p }}
+    <input class="success-btn" type="submit" value="Create">
+</form>
+
+{% endblock content %}

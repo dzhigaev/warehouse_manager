@@ -1,0 +1,110 @@
+{% extends 'main/base.html'%}
+{% load static %}
+
+{% block buttons_for_warehouses %}
+<details class="filter">
+        <summary>Filter Search</summary>
+<div class="status_selector">
+
+{% if status_selected == 'Pending' %}
+    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
+    <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
+    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
+    {% elif status_selected == 'Completed' %}
+    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
+    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
+    <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
+    <br>
+
+            <form action="" method="get">
+              <label for="completed_at">Completion date:</label>
+                <input name="status" type="hidden" value="Completed"/>
+              <input type="date" id="completed_at" name="completed_at" data-date-inline-picker="true" value="{{today}}"
+                     style="font-size:16px">
+              <input class="info-btn" type="submit" value="Search">
+            </form>
+
+
+    {% else %}
+    <a class= 'primary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
+    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
+    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
+    {% endif %}
+    </div>
+    </details>
+
+{% endblock buttons_for_warehouses %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'main/css/warehouse.css' %}">
+
+<p>{{warehouse.name}} Tickets:</p>
+
+
+{% for ticket, files in file_dict.items %}
+  {% if ticket.consol %}
+    <button class="collapsible">Ticket# {{ ticket.pk }}-{{ticket.type}} Consolidated
+        <br>Due:<b>{{ticket.due_time}}</b>
+        <br>Order:<b>{{ticket.order_nums}}</b>
+    </button>
+  {% else %}
+    <button class="collapsible">Ticket# {{ ticket.pk }}-{{ticket.type}} Dedicated
+        <br><b>Due:{{ticket.due_time}}</b>
+        <br>Order:<b>{{ticket.order_nums}}</b>
+    </button>
+  {% endif %}
+<div class="content">
+        <table class="paleBlueRows">
+            <tbody>
+            <tr>
+            <td>Manifest#:</td>
+            <td>{{ticket.manifest_num}}</td>
+            </tr>
+            <tr>
+            <td>Truck and trailer#:</td>
+            <td>{{ticket.truck}},{{ticket.trailer}}</td>
+            </tr>
+            <tr>
+            <td>Instructions:</td>
+            <td>{{ticket.instructions}}</td>
+            </tr>
+            <tr>
+            <td>Requested by:</td>
+            <td>{{ticket.user}}</td>
+            </tr>
+
+
+                {% for file, format  in files.items %}
+
+                    {% if format == 'pdf' %}
+                        <tr>
+                            <td>Files:</td>
+                            <td>
+                                <a class="picture-link" href="{{file.file.url}}" target="_blank">{{file.file}}
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>Files:</td>
+                            <td>
+                                <img class="picture-link" src="{{file.file.url}}">
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+
+            </tbody>
+        </table>
+  <a href="{% url 'ticket' wh_slug ticket.pk%}" class='info-btn'>More details</a>
+</div>
+<br>
+{% endfor %}
+
+
+<script src="{% static 'main/js/warehouse.js' %}"></script>
+{% endblock content %}
+
+
+

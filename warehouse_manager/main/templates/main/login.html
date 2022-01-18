@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
+</head>
+<script rel="stylesheet" src="{% static 'main/js/login.js' %}"></script>
+<h2>Welcome to OurSight</h2>
+<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+<div id="id01" class="modal">
+    <form class="modal-content animate" action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+        <div class="imgcontainer">
+            <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">×</span>
+        </div>
+        <div class="container">
+            <label>{{form.username.label_tag}}</label>
+            <label>{{form.username}}</label>
+            <label>{{form.password.label_tag}}</label>
+            <label>{{form.password}}</label>
+            <input type="submit" value="login" name="uname" required>
+            <input type="hidden" name="next" value="{{next}}" placeholder="Enter Password" required>
+        </div>
+    </form>
+</div>
+</html>

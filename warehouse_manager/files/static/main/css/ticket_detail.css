@@ -1,0 +1,22 @@
+table.unstyledTable {
+  font-family: Tahoma, Geneva, sans-serif;
+  border: 0px solid #000000;
+  width: 100%;
+  text-align: left;
+}
+table.unstyledTable td, table.unstyledTable th {
+  border: 0px solid #AAAAAA;
+  padding: 4px 3px;
+}
+table.unstyledTable tbody td {
+  font-size: 16px;
+}
+table.unstyledTable tr:nth-child(even) {
+  background: #D0E4F5;
+}
+
+div.tableContain {
+margin: auto;
+width: 90%;
+padding: 10px;
+}

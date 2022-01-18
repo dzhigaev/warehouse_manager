@@ -1,0 +1,44 @@
+{% load static %}
+{% load main_app_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{% static 'main/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/ticket_creation.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/ticket_detail.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Squada+One&display=swap" rel="stylesheet">
+
+    <script src="{% static 'main/js/base.js' %}"></script>
+    <script src="{% static 'main/js/ticket_creation.js' %}"></script>
+</head>
+<body>
+<div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      <a href="monitor">Trip Monitor</a>
+      <a href="{% url 'warehouses' %}">Warehouses</a>
+      <a href="{% url 'trip_creation' %}">Create Ticket/s</a>
+      <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<div id="main">
+    <header>
+
+    <div class="header">
+        {% block headerbutton %}
+        {% endblock headerbutton %}
+        <a class="menu" style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</a>
+        <a href="{% url 'home' %}" class="logo">Warehouse Manager</a>
+    </div>
+    </header>
+    {% block buttons_for_warehouses %}
+    {% endblock buttons_for_warehouses %}
+
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>
