@@ -11,7 +11,6 @@ class RoseRocket:
         self.login_post_url = os.environ.get('ROSER_LOGIN_POST_URL')
         self.login_creds = os.environ.get('ROSER_LOGIN_CREDS')
         self.login_creds = json.loads(self.login_creds)
-        print(self.login_creds)
         self.s.headers.update({
             "content-type": "application/json",
             "accept": "application/json",

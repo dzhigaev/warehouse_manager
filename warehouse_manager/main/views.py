@@ -53,7 +53,7 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
                 else:
                     files[file] = 'jpg'
             context['file_dict'].update({tick: files})
-            print(context['file_dict'])
+            # print(context['file_dict'])
 
         c_def = self.get_user_context(title='Ticket list',
                                       warehouse=Warehouses.objects.get(slug=self.kwargs['wh_slug']),
@@ -108,7 +108,7 @@ class TicketsView(LoginRequiredMixin, DataMixin, ListView):
                 files[file] = 'pdf'
             else:
                 files[file] = 'jpg'
-        print(files)
+        # print(files)
         c_def = self.get_user_context(title='Ticket details',
                                       ticket_files=files)
         return dict(list(context.items()) + list(c_def.items()))
@@ -128,15 +128,13 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
     rose_rocket = RoseRocket()
 
     def post(self, request, *args, **kwargs):
-        print(kwargs)
-        print(args)
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = request.FILES.getlist('files')
         if form.is_valid():
             data = form.cleaned_data
             if form.cleaned_data['incoming'] == form.cleaned_data['outgoing']:
-                print('one ticket')
+                # print('one ticket')
                 ticket = self.model(manifest_num=f'MENCM{form.cleaned_data["manifest"]}',
                                     order_nums=data['order_nums'],
                                     truck=data['truck'],
@@ -202,7 +200,7 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         if manifest is not None:
             manifest = f'MENCM{"".join([char for char in manifest if char.isdigit()])}'
             manifests = self.rose_rocket.get_manifest_by_number(manifest)
-            print(manifests)
+            self.form_class = TripCreation(manifests=manifest)
         else:
             manifests = []
         c_def = self.get_user_context(title='Ticket creation',
@@ -212,3 +210,4 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         return dict(list(context.items()) + list(c_def.items()))
     # def get(self, request, *args, **kwargs):
     #     manifest = self.request.GET.get('')
+

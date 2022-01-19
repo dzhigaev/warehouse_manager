@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.py[co]
+*.sw[po]
+*~
+/warehouse_manager/secrets.json
 
 # C extensions
 *.so
