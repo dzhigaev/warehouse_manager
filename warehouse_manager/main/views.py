@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UsernameField
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,7 +11,7 @@ from django.views.generic import ListView, CreateView, FormView
 from django.contrib.auth import logout
 
 from .django_roser import RoseRocket
-from .forms import TripCreation, ManifestSearch
+from .forms import TripCreation
 from .models import *
 from .utils import DataMixin
 
@@ -117,7 +119,6 @@ class TicketsView(LoginRequiredMixin, DataMixin, ListView):
         return Tickets.objects.get(warehouse__slug=self.kwargs['wh_slug'], pk=self.kwargs['tick_id'])
 
 
-
 class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
     model = Tickets
     login_url = 'login'
@@ -126,6 +127,9 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
     form_class = TripCreation
     success_url = 'warehouse'
     rose_rocket = RoseRocket()
+    rose_rocket_manifest_list = rose_rocket.get_active_manifests() # list
+    rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
+
 
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
@@ -134,7 +138,6 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         if form.is_valid():
             data = form.cleaned_data
             if form.cleaned_data['incoming'] == form.cleaned_data['outgoing']:
-                # print('one ticket')
                 ticket = self.model(manifest_num=f'MENCM{form.cleaned_data["manifest"]}',
                                     order_nums=data['order_nums'],
                                     truck=data['truck'],
@@ -195,19 +198,44 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
         manifest = self.request.GET.get('manifest', None)
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Ticket creation')
         if manifest is not None:
             manifest = f'MENCM{"".join([char for char in manifest if char.isdigit()])}'
-            manifests = self.rose_rocket.get_manifest_by_number(manifest)
-            self.form_class = TripCreation(manifests=manifest)
-        else:
-            manifests = []
-        c_def = self.get_user_context(title='Ticket creation',
-                                      manifest_list=[m['full_id'] for m in manifests]
-                                      )
+            if manifest in self.rose_rocket_dict.keys():
+                search_manifest = self.rose_rocket_dict[manifest]
+                c_def['manifest_list'] = search_manifest['full_id']
+            else:
+                search_manifest = None
+
+        chosen_man = self.request.GET.get('chosen_man', None)
+        if chosen_man is not None:
+            c_def['manifest_full_id'] = chosen_man
+
 
         return dict(list(context.items()) + list(c_def.items()))
-    # def get(self, request, *args, **kwargs):
-    #     manifest = self.request.GET.get('')
 
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super().get_initial()
+
+        chosen_man = self.request.GET.get('chosen_man', None)
+
+        if chosen_man is not None:
+            chosen_manifest_id = self.rose_rocket_dict[chosen_man]['id']
+            files = self.rose_rocket.get_manifest_files(chosen_manifest_id)
+            initial['manifest'] = chosen_man
+            if len(files.keys()) > 1:
+                initial['consol'] = True
+            print(files)
+            common_list_for_files = []
+            for files_list in [file_list for file_list in files.values()]:
+                common_list_for_files.extend(files_list)
+
+            initial['order_nums'] = ', '.join(list(files.keys()))
+            initial['files_url'] = ',  '.join(common_list_for_files)
+
+        return initial

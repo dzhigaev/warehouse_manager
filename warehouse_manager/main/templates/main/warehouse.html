@@ -16,13 +16,13 @@
     <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
     <br>
 
-            <form action="" method="get">
-              <label for="completed_at">Completion date:</label>
-                <input name="status" type="hidden" value="Completed"/>
-              <input type="date" id="completed_at" name="completed_at" data-date-inline-picker="true" value="{{today}}"
-                     style="font-size:16px">
-              <input class="info-btn" type="submit" value="Search">
-            </form>
+        <form action="" method="get">
+          <label for="completed_at">Completion date:</label>
+            <input name="status" type="hidden" value="Completed"/>
+          <input type="date" id="completed_at" name="completed_at" data-date-inline-picker="true" value="{{today}}"
+                 style="font-size:16px">
+          <input class="info-btn" type="submit" value="Search">
+        </form>
 
 
     {% else %}

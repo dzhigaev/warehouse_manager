@@ -2,7 +2,19 @@
 {% load static %}
 
 {% block content %}
+<form action="" method="get">
+    <label for="search-1">MENCM:</label>
+    <input type="search" oninput="buildhidden()" id="search-1" name="manifest" value="{{manifest_full_id}}">
+    <input type="submit" value="Search" class="info-btn">
+</form>
+{% if manifest_list %}
+<p>Found these manifest #s:</p>
+    <form method="get" action="">
+        <input type="submit" value="{{manifest_list}}" class="secondary-btn" name="chosen_man">
+    </form>
+{% endif %}
 <form method="post" enctype="multipart/form-data">{% csrf_token %}
+
     {% for field in form %}
     <p>{{field.label}}</p>
     {{field}}
