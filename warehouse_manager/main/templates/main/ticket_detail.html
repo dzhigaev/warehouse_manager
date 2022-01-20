@@ -2,57 +2,100 @@
 {% load static %}
 
 {% block headerbutton %}
-        <a class="menu-arrow" style="font-size:30px;cursor:pointer" onclick="history.back()"><img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}" ></a>
+        <a class="menu-arrow" style="font-size:30px;cursor:pointer" href="{% url 'warehouse' wh_slug %}"><img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}" ></a>
 {% endblock headerbutton %}
 
 {% block content %}
 <div class="tableContain">
-    <table class="unstyledTable">
-        <tbody>
-        <tr>
-            <td><b>Ticket# </b></td> <td>{{ticket.pk}}</td>
-        </tr>
-        <tr>
-            <td>Due by:</td> <td>{{ticket.due_time}}</td>
-        </tr>
-        <tr>
-            <td>Instruction: </td><td><b>{{ticket.type}}</b></td>
-        </tr>
-        <tr>
-        <td>Truck/Trailer# </td> <td>{{ticket.truck}}, {{ticket.trailer}}</td>
-        </tr>
-        <tr>
-            {% if ticket.consol %}
-                <td>Trailer Status:</td><td><b>Consolidated</b></td>
-            {% else %}
-            <td>Trailer Status:</td><td><b>Dedicated</b></td>
-            {% endif %}
-        </tr>
-        <tr>
-        <td>Additional details: </td><td>{{ticket.instructions}}</td>
-        </tr>
-        <tr>
-        <td>Requested by: </td> <td>{{ticket.user}}</td>
-        </tr>
-        <tr>
-            <td>Files: </td><td></td>
-        </tr>
+    <div>Ticket#</div>
+    <div>{{ticket.pk}}</div>
+    <div>Due by:</div>
+    <div>{{ticket.due_time}}</div>
+    <div>Instructions:</div>
+    <div>{{ticket.type}}</div>
+    <div>Truck/Trailer:</div>
+    <div>{{ticket.truck}}, {{ticket.trailer}}</div>
+    <div>Trailer Status:</div>
+    {% if ticket.consol %}
+        <div>Consolidated</div>
+    {% else %}
+        <div>Dedicated</div>
+    {% endif %}
+    <div>Additional details:</div>
+    <div>{{ticket.instructions}}</div>
+    <div>Requested by:</div>
+    <div>{{ticket.user}}</div>
+    <div>Documents:</div>
+
+    <div>
+        {% for count, url in ticket_urls %}
+        <div><a href="{{url}}" class="secondary-btn" target="_blank">Show document# {{count}}</a></div>
+        {% endfor %}
+    </div>
+
+    <div>Files:</div>
+
+    <div>
+        {% for file, format  in ticket_files.items %}
+        {% if format == 'pdf' %}
+            <a class="secondary-btn" href="{{ file.file.url }}"> Show: {{file.file}}</a>
+        {%elif format == 'jpg' %}
+                <div><img class="detailed-image" src="{{ file.file.url}}"></div>
+        {% else %}
+                <div>No files were added</div>
+        {% endif %}
+    </div>
+    {% endfor %}
 
 
-                {% for file, format  in ticket_files.items %}
-        <tr>
-            <td></td>
-            <td>
-                    {% if format == 'pdf' %}
-                        <a class="secondary-btn" href="{{ file.file.url }}"> Show: {{file.file}}</a>
-                    {%else%}
-                        <img class="detailed-image" src="{{ file.file.url}}">
-                    {% endif %}
-            </td>
-        </tr>
-                {% endfor %}
+<!--</div>-->
+<!--<div class="tableContain">-->
+<!--    <table class="unstyledTable">-->
+<!--        <tbody>-->
+<!--        <tr>-->
+<!--            <td><b>Ticket# </b></td> <td>{{ticket.pk}}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>Due by:</td> <td>{{ticket.due_time}}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>Instruction: </td><td><b>{{ticket.type}}</b></td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--        <td>Truck/Trailer# </td> <td>{{ticket.truck}}, {{ticket.trailer}}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            {% if ticket.consol %}-->
+<!--                <td>Trailer Status:</td><td><b>Consolidated</b></td>-->
+<!--            {% else %}-->
+<!--            <td>Trailer Status:</td><td><b>Dedicated</b></td>-->
+<!--            {% endif %}-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--        <td>Additional details: </td><td>{{ticket.instructions}}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--        <td>Requested by: </td> <td>{{ticket.user}}</td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>Files: </td><td></td>-->
+<!--        </tr>-->
 
-        </tbody>
-    </table>
-</div>
+
+<!--                {% for file, format  in ticket_files.items %}-->
+<!--        <tr>-->
+<!--            <td></td>-->
+<!--            <td>-->
+<!--                    {% if format == 'pdf' %}-->
+<!--                        <a class="secondary-btn" href="{{ file.file.url }}"> Show: {{file.file}}</a>-->
+<!--                    {%else%}-->
+<!--                        <img class="detailed-image" src="{{ file.file.url}}">-->
+<!--                    {% endif %}-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--                {% endfor %}-->
+
+<!--        </tbody>-->
+<!--    </table>-->
+<!--</div>-->
 {% endblock content %}
