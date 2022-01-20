@@ -1,9 +1,17 @@
-div.tableContain {
+/*div.tableContain {
 margin: auto;
-width: 60%;
+width: 80%;
 padding: 10px;
-overflow:hidden;
+overflow: auto;
+}*/
+.tableContain {
+display: grid;
+grid-template-columns: 0.5fr 1fr;
+grid-template-rows: repeat(7, 1fr);
+grid-column-gap: 10px;
+grid-row-gap: 7px;
 }
+
 
 table.unstyledTable {
   border: 0px solid #000000;
@@ -20,8 +28,6 @@ table.unstyledTable tbody td {
 table.unstyledTable tr:nth-child(even) {
   background: #D0E4F5;
 }
-
-
 
 .detailed-image{
     display:block;

@@ -50,10 +50,11 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
             associated_files = tick.ticketimage_set.all()
             files = {}
             for file in associated_files:
-                if file.file.url[-3:] == 'pdf':
-                    files[file] = 'pdf'
-                else:
-                    files[file] = 'jpg'
+                if bool(file.file):
+                    if file.file.url[-3:] == 'pdf':
+                        files[file] = 'pdf'
+                    else:
+                        files[file] = 'jpg'
             context['file_dict'].update({tick: files})
             # print(context['file_dict'])
 
@@ -105,14 +106,23 @@ class TicketsView(LoginRequiredMixin, DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         associated_files = context['ticket'].ticketimage_set.all()
         files = {}
-        for file in associated_files:
-            if file.file.url[-3:] == 'pdf':
-                files[file] = 'pdf'
-            else:
-                files[file] = 'jpg'
+        print(associated_files)
+        for file in [file for file in associated_files if file is not None]:
+            if bool(file.file):
+                if file.file.url[-3:] == 'pdf':
+                    files[file] = 'pdf'
+                else:
+                    files[file] = 'jpg'
         # print(files)
+        print(files)
         c_def = self.get_user_context(title='Ticket details',
-                                      ticket_files=files)
+                                      ticket_files=files,
+                                      ticket_urls=enumerate(
+                                          [url.external_url for url in associated_files if bool(url.external_url)],
+                                          start=1,
+                                      ),
+                                      wh_slug=self.kwargs['wh_slug']
+                                      )
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_queryset(self, **kwargs):
@@ -127,18 +137,18 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
     form_class = TripCreation
     success_url = 'warehouse'
     rose_rocket = RoseRocket()
-    rose_rocket_manifest_list = rose_rocket.get_active_manifests() # list
+    rose_rocket_manifest_list = rose_rocket.get_active_manifests()  # list
     rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
-
 
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = request.FILES.getlist('files')
         if form.is_valid():
+            url = form.cleaned_data['files_url'].split('  ')
             data = form.cleaned_data
             if form.cleaned_data['incoming'] == form.cleaned_data['outgoing']:
-                ticket = self.model(manifest_num=f'MENCM{form.cleaned_data["manifest"]}',
+                ticket = self.model(manifest_num=f'{form.cleaned_data["manifest"]}',
                                     order_nums=data['order_nums'],
                                     truck=data['truck'],
                                     trailer=data['trailer'],
@@ -156,9 +166,12 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                     uploaded_file = TicketImage(ticket=ticket,
                                                 file=f)
                     uploaded_file.save()
-
+                for furl in url:
+                    uploaded_url = TicketImage(ticket=ticket,
+                                               external_url=furl)
+                    uploaded_url.save()
             else:
-                ticket_one = self.model(manifest_num=f'MENCM{form.cleaned_data["manifest"]}',
+                ticket_one = self.model(manifest_num=f'{form.cleaned_data["manifest"]}',
                                         order_nums=data['order_nums'],
                                         truck=data['truck'],
                                         trailer=data['trailer'],
@@ -171,7 +184,7 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                                         warehouse=data['incoming'],
                                         status='Pending'
                                         )
-                ticket_two = self.model(manifest_num=f'MENCM{form.cleaned_data["manifest"]}',
+                ticket_two = self.model(manifest_num=f'{form.cleaned_data["manifest"]}',
                                         order_nums=data['order_nums'],
                                         truck=data['truck'],
                                         trailer=data['trailer'],
@@ -187,12 +200,17 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                 ticket_one.save()
                 ticket_two.save()
                 for f in files:
-                    uploaded_file = TicketImage(ticket=ticket_one,
-                                                file=f)
-                    uploaded_file1 = TicketImage(ticket=ticket_two,
-                                                 file=f)
+                    uploaded_file = TicketImage(
+                        file=f)
                     uploaded_file.save()
-                    uploaded_file1.save()
+                    uploaded_file.ticket.add(ticket_one, ticket_two)
+
+                for furl in url:
+                    uploaded_url = TicketImage(
+                        external_url=furl)
+                    uploaded_url.save()
+                    uploaded_url.ticket.add(ticket_one, ticket_two)
+
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -213,7 +231,6 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         if chosen_man is not None:
             c_def['manifest_full_id'] = chosen_man
 
-
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_initial(self):
@@ -230,12 +247,10 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
             initial['manifest'] = chosen_man
             if len(files.keys()) > 1:
                 initial['consol'] = True
-            print(files)
             common_list_for_files = []
             for files_list in [file_list for file_list in files.values()]:
                 common_list_for_files.extend(files_list)
-
             initial['order_nums'] = ', '.join(list(files.keys()))
-            initial['files_url'] = ',  '.join(common_list_for_files)
+            initial['files_url'] = '  '.join([file for file in common_list_for_files if file is not None])
 
         return initial
