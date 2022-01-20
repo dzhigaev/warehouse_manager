@@ -11,7 +11,6 @@ class RoseRocket:
         self.login_post_url = os.environ.get('ROSER_LOGIN_POST_URL')
         self.login_creds = os.environ.get('ROSER_LOGIN_CREDS')
         self.login_creds = json.loads(self.login_creds)
-        print(self.login_creds)
         self.s.headers.update({
             "content-type": "application/json",
             "accept": "application/json",
@@ -42,6 +41,9 @@ class RoseRocket:
         self.login()
         self.manifest_url = os.environ.get('ROSER_MANIFEST_URL')
         params = {'in_master_trip_status_ids': 'planning,assigned,moving',
+                  'time_start_at': f'{self.last_week}',
+                  'time_end_at': f'{self.next_week}',
+                  'time_relative_date': 'dateRange',
                   'sort': 'start_at asc',
                   'limit': '200',
                   'offset': '0'}
@@ -54,15 +56,16 @@ class RoseRocket:
         params = {'relations': 'orders'}
         reply = self.s.get(url, params=params, headers=self.s.headers).json()
         reply_pic = self.s.get(url_pic, headers=self.s.headers).json()
-        file = []
+        load_file_dict = {}
         for order in reply['data']['master_trip']['orders']:
-            file.append(order['pop_file_url'])
+            load_file_dict[order['full_id']] = []
+            load_file_dict[order['full_id']].append(order['pop_file_url'])
 
         for stop in reply_pic['data']['stops']:
             for task in stop['tasks']:
                 for files in task['task_files']:
-                    file.append(files['url'])
-        return file
+                    load_file_dict[task['order_full_id']].append(files['url'])
+        return load_file_dict
 
     def get_manifest_by_number(self, search_term):
         self.login()
@@ -78,7 +81,6 @@ class RoseRocket:
 
 if __name__ == '__main__':
     r = RoseRocket()
-    manifests = r.get_active_manifests()
-    for man in manifests:
-        time.sleep(2)
-        print(r.get_manifest_files(man['id']))
+    manifests = r.get_manifest_files('899089d7-a6b4-48fd-b0d3-8a1e27f1be30')
+    print(manifests)
+

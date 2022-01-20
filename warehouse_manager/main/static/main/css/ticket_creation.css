@@ -5,7 +5,7 @@ form .success-btn {
   padding: 20px;
 }
 
-form input[type=text], select, textarea, input[type=number]{
+form input[type=text], select, textarea, input[type=search], input[type=url]{
   width: 100%;
   padding: 12px;
   border: 1px solid #ccc;

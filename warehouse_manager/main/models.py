@@ -37,6 +37,7 @@ class Tickets(models.Model):
 class TicketImage(models.Model):
     ticket = models.ManyToManyField('Tickets', blank=True)
     file = models.FileField(blank=True, upload_to='ticket_files/%Y/%m/%d', max_length=255)
+    external_url = models.URLField(blank=True)
 
     # class Meta:
     #     ordering = ['ticket']
