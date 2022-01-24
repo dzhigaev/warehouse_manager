@@ -137,13 +137,12 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
     form_class = TripCreation
     success_url = 'warehouse'
     rose_rocket = RoseRocket()
-    rose_rocket_manifest_list = rose_rocket.get_active_manifests()  # list
-    rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
 
     def post(self, request, *args, **kwargs):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         files = request.FILES.getlist('files')
+
         if form.is_valid():
             url = form.cleaned_data['files_url'].split('  ')
             data = form.cleaned_data
@@ -216,13 +215,18 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
+
+
         manifest = self.request.GET.get('manifest', None)
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Ticket creation')
         if manifest is not None:
+            print('worked 1')
+            rose_rocket_manifest_list = self.rose_rocket.get_active_manifests()  # list
+            rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
             manifest = f'MENCM{"".join([char for char in manifest if char.isdigit()])}'
-            if manifest in self.rose_rocket_dict.keys():
-                search_manifest = self.rose_rocket_dict[manifest]
+            if manifest in rose_rocket_dict.keys():
+                search_manifest = rose_rocket_dict[manifest]
                 c_def['manifest_list'] = search_manifest['full_id']
             else:
                 search_manifest = None
@@ -242,7 +246,10 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         chosen_man = self.request.GET.get('chosen_man', None)
 
         if chosen_man is not None:
-            chosen_manifest_id = self.rose_rocket_dict[chosen_man]['id']
+            print('worked 2')
+            rose_rocket_manifest_list = self.rose_rocket.get_active_manifests()  # list
+            rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
+            chosen_manifest_id = rose_rocket_dict[chosen_man]['id']
             files = self.rose_rocket.get_manifest_files(chosen_manifest_id)
             initial['manifest'] = chosen_man
             if len(files.keys()) > 1:

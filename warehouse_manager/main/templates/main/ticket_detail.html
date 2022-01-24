@@ -8,23 +8,23 @@
 {% block content %}
 <div class="tableContain">
     <div>Ticket#</div>
-    <div>{{ticket.pk}}</div>
+    <div><b>{{ticket.pk}}</b></div>
     <div>Due by:</div>
-    <div>{{ticket.due_time}}</div>
+    <div><b>{{ticket.due_time}}</b></div>
     <div>Instructions:</div>
-    <div>{{ticket.type}}</div>
+    <div><b>{{ticket.type}}</b></div>
     <div>Truck/Trailer:</div>
-    <div>{{ticket.truck}}, {{ticket.trailer}}</div>
+    <div><b>{{ticket.truck}}, {{ticket.trailer}}</b></div>
     <div>Trailer Status:</div>
     {% if ticket.consol %}
-        <div>Consolidated</div>
+        <div><b>Consolidated</b></div>
     {% else %}
-        <div>Dedicated</div>
+        <div><b>Dedicated</b></div>
     {% endif %}
     <div>Additional details:</div>
-    <div>{{ticket.instructions}}</div>
+    <div><b>{{ticket.instructions}}</b></div>
     <div>Requested by:</div>
-    <div>{{ticket.user}}</div>
+    <div><b>{{ticket.user}}</b></div>
     <div>Documents:</div>
 
     <div>
