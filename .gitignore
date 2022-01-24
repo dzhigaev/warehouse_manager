@@ -133,4 +133,4 @@ dmypy.json
 .pyre/
 
 # Custom fields
-.src/files/media
+warehouse_manager/files/media
