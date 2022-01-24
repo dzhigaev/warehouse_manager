@@ -11,7 +11,7 @@ from django.views.generic import ListView, CreateView, FormView
 from django.contrib.auth import logout
 
 from .django_roser import RoseRocket
-from .forms import TripCreation
+from .forms import TripCreation, WarehouseReplyForm
 from .models import *
 from .utils import DataMixin
 
@@ -261,3 +261,11 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
             initial['files_url'] = '  '.join([file for file in common_list_for_files if file is not None])
 
         return initial
+
+
+class WarehouseReply(LoginRequiredMixin, FormView):
+    model = WarehouseReply
+    login_url = 'login'
+    next_page = 'next'
+    template_name = 'main/warehouse_reply.html'
+    form_class = WarehouseReplyForm

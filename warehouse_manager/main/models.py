@@ -47,9 +47,9 @@ class TicketImage(models.Model):
 
     def get_absolute_url(self):
         return reverse('file', kwargs={'tick_id': self.ticket.pk,
-                              'wh_slug': self.ticket.warehouse.slug,
-                              'file_name': self.file,
-                              })
+                                       'wh_slug': self.ticket.warehouse.slug,
+                                       'file_name': self.file,
+                                       })
 
 
 class WarehouseReply(models.Model):
@@ -64,6 +64,11 @@ class WarehouseReply(models.Model):
 
     class Meta:
         ordering = ['ticket']
+
+    def get_absolute_url(self):
+        return reverse('reply', kwargs={'tick_id': self.ticket.pk,
+                                        'wh_slug': self.warehouse.slug,
+                                        })
 
 
 class Warehouses(models.Model):

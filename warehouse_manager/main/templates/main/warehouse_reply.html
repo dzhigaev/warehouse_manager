@@ -1,0 +1,9 @@
+{% extends 'main/base.html'%}
+{% load static %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+    {{form.as_p}}
+    <input class="success-btn" type="submit" value="Complete">
+</form>
+{% endblock content %}

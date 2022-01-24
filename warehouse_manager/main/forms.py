@@ -1,5 +1,5 @@
 from django import forms
-from .models import Warehouses, Tickets, Trucks, Trailers
+from .models import Warehouses, Trucks, Trailers, WarehouseReply
 
 
 class MyLogin(forms.Form):
@@ -35,5 +35,10 @@ class TripCreation(forms.Form):
     incoming_instructions = forms.CharField(widget=forms.Textarea, required=False)
     outgoing_instructions = forms.CharField(widget=forms.Textarea, required=False)
 
+
+class WarehouseReplyForm(forms.ModelForm):
+    class Meta:
+        model = WarehouseReply
+        fields = ['comments', 'files']
 
 

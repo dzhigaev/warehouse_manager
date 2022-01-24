@@ -6,6 +6,8 @@
 {% endblock headerbutton %}
 
 {% block content %}
+<a href="{% url 'reply' wh_slug ticket.pk%}" class='info-btn'>Complete</a>
+<a href="{% url 'ticket' wh_slug ticket.pk%}" class='secondary-btn'>Edit</a>
 <div class="tableContain">
     <div>Ticket#</div>
     <div><b>{{ticket.pk}}</b></div>
@@ -47,55 +49,4 @@
     </div>
     {% endfor %}
 
-
-<!--</div>-->
-<!--<div class="tableContain">-->
-<!--    <table class="unstyledTable">-->
-<!--        <tbody>-->
-<!--        <tr>-->
-<!--            <td><b>Ticket# </b></td> <td>{{ticket.pk}}</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>Due by:</td> <td>{{ticket.due_time}}</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>Instruction: </td><td><b>{{ticket.type}}</b></td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--        <td>Truck/Trailer# </td> <td>{{ticket.truck}}, {{ticket.trailer}}</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            {% if ticket.consol %}-->
-<!--                <td>Trailer Status:</td><td><b>Consolidated</b></td>-->
-<!--            {% else %}-->
-<!--            <td>Trailer Status:</td><td><b>Dedicated</b></td>-->
-<!--            {% endif %}-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--        <td>Additional details: </td><td>{{ticket.instructions}}</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--        <td>Requested by: </td> <td>{{ticket.user}}</td>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td>Files: </td><td></td>-->
-<!--        </tr>-->
-
-
-<!--                {% for file, format  in ticket_files.items %}-->
-<!--        <tr>-->
-<!--            <td></td>-->
-<!--            <td>-->
-<!--                    {% if format == 'pdf' %}-->
-<!--                        <a class="secondary-btn" href="{{ file.file.url }}"> Show: {{file.file}}</a>-->
-<!--                    {%else%}-->
-<!--                        <img class="detailed-image" src="{{ file.file.url}}">-->
-<!--                    {% endif %}-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--                {% endfor %}-->
-
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
 {% endblock content %}

@@ -97,7 +97,8 @@
 
             </tbody>
         </table>
-  <a href="{% url 'ticket' wh_slug ticket.pk%}" class='info-btn'>More details</a>
+    <a href="{% url 'ticket' wh_slug ticket.pk%}" class='info-btn'>More details</a>
+    <a href="{% url 'ticket' wh_slug ticket.pk%}" class='secondary-btn'>Edit</a>
 </div>
 <br>
 {% endfor %}
