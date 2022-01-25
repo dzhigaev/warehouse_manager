@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">{% csrf_token %}
+<form method="post" enctype="multipart/form-data"
+onsubmit="return confirm('Are you sure you want to close the ticket?');">{% csrf_token %}
     {{form.as_p}}
     <input class="success-btn" type="submit" value="Complete">
 </form>

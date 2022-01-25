@@ -12,11 +12,12 @@ urlpatterns = [
     path('warehouse/', WarehouseCommonPage.as_view(), name='warehouses'),
     path('warehouse/<slug:wh_slug>/ticket/<int:tick_id>', TicketsView.as_view(), name='ticket'),
     path('warehouse/<slug:wh_slug>/ticket/<int:tick_id>/reply/',
-         WarehouseReply.as_view(),
+         WarehouseReplyFormView.as_view(),
          name='reply'
          ),
     path('create-trip', CreateTicket.as_view(), name='trip_creation'),
     path('create-trip/<str:manifest>', CreateTicket.as_view(), name='trip_creation'),
+    # path('file/<int:file_id>/<str:file_name>', CreateTicket.as_view(), name='trip_creation'),
     path('logout', logout_user, name='logout'),
 ]
 

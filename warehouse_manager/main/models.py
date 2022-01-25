@@ -20,7 +20,7 @@ class Tickets(models.Model):
     instructions = models.TextField(max_length=500, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     warehouse = models.ForeignKey('Warehouses', on_delete=models.PROTECT)
-    status = models.SlugField(max_length=10, default='Pending')
+    status = models.CharField(max_length=10, default='Pending')
 
     def __str__(self):
         return f'{self.pk}//{self.manifest_num}//{self.due_time}//{self.status}'
@@ -35,7 +35,7 @@ class Tickets(models.Model):
 
 
 class TicketImage(models.Model):
-    ticket = models.ManyToManyField('Tickets', blank=True)
+    ticket = models.ManyToManyField('Tickets', blank=False)
     file = models.FileField(blank=True, upload_to='ticket_files/%Y/%m/%d', max_length=255)
     external_url = models.URLField(blank=True)
 
@@ -46,8 +46,7 @@ class TicketImage(models.Model):
         return f'{self.pk}//{self.file}'
 
     def get_absolute_url(self):
-        return reverse('file', kwargs={'tick_id': self.ticket.pk,
-                                       'wh_slug': self.ticket.warehouse.slug,
+        return reverse('file', kwargs={'file_id': self.pk,
                                        'file_name': self.file,
                                        })
 
@@ -57,7 +56,7 @@ class WarehouseReply(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
     warehouse = models.ForeignKey('Warehouses', on_delete=models.DO_NOTHING)
     comments = models.TextField(max_length=400, blank=True)
-    files = models.FileField(blank=True, upload_to=MEDIA_ROOT.strip('/'))
+    # files = models.FileField(blank=True, upload_to=MEDIA_ROOT.strip('/'))
 
     def __str__(self):
         return str(self.ticket.pk)
@@ -69,6 +68,14 @@ class WarehouseReply(models.Model):
         return reverse('reply', kwargs={'tick_id': self.ticket.pk,
                                         'wh_slug': self.warehouse.slug,
                                         })
+
+
+class ReplyImage(models.Model):
+    reply = models.ManyToManyField('WarehouseReply', blank=False)
+    file = models.FileField(blank=True, upload_to='replyfiles/%Y/%m/%d', max_length=255)
+
+    def __str__(self):
+        return f'{self.pk}//{self.file}'
 
 
 class Warehouses(models.Model):

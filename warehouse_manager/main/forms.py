@@ -36,9 +36,8 @@ class TripCreation(forms.Form):
     outgoing_instructions = forms.CharField(widget=forms.Textarea, required=False)
 
 
-class WarehouseReplyForm(forms.ModelForm):
-    class Meta:
-        model = WarehouseReply
-        fields = ['comments', 'files']
+class WarehouseReplyForm(forms.Form):
+    comments = forms.CharField(widget=forms.Textarea, required=False)
+    files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
 

@@ -106,15 +106,12 @@ class TicketsView(LoginRequiredMixin, DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         associated_files = context['ticket'].ticketimage_set.all()
         files = {}
-        print(associated_files)
         for file in [file for file in associated_files if file is not None]:
             if bool(file.file):
                 if file.file.url[-3:] == 'pdf':
                     files[file] = 'pdf'
                 else:
                     files[file] = 'jpg'
-        # print(files)
-        print(files)
         c_def = self.get_user_context(title='Ticket details',
                                       ticket_files=files,
                                       ticket_urls=enumerate(
@@ -155,20 +152,20 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                                     consol=data['consol'],
                                     due_time=data['incoming_due_time'],
                                     created=datetime.datetime.now(),
-                                    instructions=data['instructions'],
+                                    instructions=data['incoming_instructions']+data['outgoing_instructions'],
                                     user=self.request.user,
                                     warehouse=data['incoming'],
                                     status='Pending'
                                     )
                 ticket.save()
                 for f in files:
-                    uploaded_file = TicketImage(ticket=ticket,
-                                                file=f)
+                    uploaded_file = TicketImage(file=f)
                     uploaded_file.save()
+                    uploaded_file.ticket.add(ticket)
                 for furl in url:
-                    uploaded_url = TicketImage(ticket=ticket,
-                                               external_url=furl)
+                    uploaded_url = TicketImage(external_url=furl)
                     uploaded_url.save()
+                    uploaded_url.ticket.add(ticket)
             else:
                 ticket_one = self.model(manifest_num=f'{form.cleaned_data["manifest"]}',
                                         order_nums=data['order_nums'],
@@ -203,25 +200,20 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                         file=f)
                     uploaded_file.save()
                     uploaded_file.ticket.add(ticket_one, ticket_two)
-
                 for furl in url:
                     uploaded_url = TicketImage(
                         external_url=furl)
                     uploaded_url.save()
                     uploaded_url.ticket.add(ticket_one, ticket_two)
-
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
-
-
         manifest = self.request.GET.get('manifest', None)
         context = super().get_context_data(**kwargs)
         c_def = self.get_user_context(title='Ticket creation')
         if manifest is not None:
-            print('worked 1')
             rose_rocket_manifest_list = self.rose_rocket.get_active_manifests()  # list
             rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
             manifest = f'MENCM{"".join([char for char in manifest if char.isdigit()])}'
@@ -230,11 +222,9 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                 c_def['manifest_list'] = search_manifest['full_id']
             else:
                 search_manifest = None
-
         chosen_man = self.request.GET.get('chosen_man', None)
         if chosen_man is not None:
             c_def['manifest_full_id'] = chosen_man
-
         return dict(list(context.items()) + list(c_def.items()))
 
     def get_initial(self):
@@ -242,11 +232,9 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         Returns the initial data to use for forms on this view.
         """
         initial = super().get_initial()
-
         chosen_man = self.request.GET.get('chosen_man', None)
 
         if chosen_man is not None:
-            print('worked 2')
             rose_rocket_manifest_list = self.rose_rocket.get_active_manifests()  # list
             rose_rocket_dict = {m['full_id']: m for m in rose_rocket_manifest_list}
             chosen_manifest_id = rose_rocket_dict[chosen_man]['id']
@@ -259,13 +247,44 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                 common_list_for_files.extend(files_list)
             initial['order_nums'] = ', '.join(list(files.keys()))
             initial['files_url'] = '  '.join([file for file in common_list_for_files if file is not None])
-
         return initial
 
 
-class WarehouseReply(LoginRequiredMixin, FormView):
+class WarehouseReplyFormView(LoginRequiredMixin, FormView):
     model = WarehouseReply
     login_url = 'login'
     next_page = 'next'
     template_name = 'main/warehouse_reply.html'
+    success_url = '/warehouse/'
     form_class = WarehouseReplyForm
+
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        files = request.FILES.getlist('files')
+        ticket = Tickets.objects.get(pk=self.kwargs['tick_id'])
+        if form.is_valid():
+            comments = form.cleaned_data['comments']
+            reply = WarehouseReply(
+                ticket=ticket,
+                user=self.request.user,
+                warehouse=Warehouses.objects.get(slug=self.kwargs['wh_slug']),
+                comments=comments,
+            )
+            reply.save()
+            for file in files:
+                uploaded_file = ReplyImage(
+                    file=file
+                )
+                uploaded_file.save()
+                uploaded_file.reply.add(reply)
+            ticket.status = 'Completed'
+            ticket.completed = datetime.datetime.now()
+            ticket.save()
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    # def get(self, request, *args, **kwargs):
+    #     print(kwargs)
+    #     print(args)
