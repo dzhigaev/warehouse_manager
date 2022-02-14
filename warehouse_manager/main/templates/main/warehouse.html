@@ -3,8 +3,8 @@
 
 {% block buttons_for_warehouses %}
 <details class="filter">
-        <summary>Filter Search</summary>
-<div class="status_selector">
+    <summary>Filter Search</summary>
+    <div class="status_selector">
 
 {% if status_selected == 'Pending' %}
     <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
@@ -14,17 +14,6 @@
     <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
     <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
     <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
-    <br>
-
-        <form action="" method="get">
-          <label for="completed_at">Completion date:</label>
-            <input name="status" type="hidden" value="Completed"/>
-          <input type="date" id="completed_at" name="completed_at" data-date-inline-picker="true" value="{{today}}"
-                 style="font-size:16px">
-          <input class="info-btn" type="submit" value="Search">
-        </form>
-
-
     {% else %}
     <a class= 'primary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
     <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
@@ -32,12 +21,19 @@
     {% endif %}
     </div>
     </details>
-
 {% endblock buttons_for_warehouses %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'main/css/warehouse.css' %}">
-
+{% if status_selected == 'Completed' %}
+    <form action="" method="get">
+      <label for="completed_at">Completion date:</label>
+        <input name="status" type="hidden" value="Completed"/>
+      <input type="date" id="completed_at" name="completed_at" data-date-inline-picker="true" value="{{today}}"
+             style="font-size:16px">
+      <input class="info-btn" type="submit" value="Search">
+    </form>
+{% endif %}
 <p>{{warehouse.name}} Tickets:</p>
 
 
@@ -98,7 +94,6 @@
             </tbody>
         </table>
     <a href="{% url 'ticket' wh_slug ticket.pk%}" class='info-btn'>More details</a>
-    <a href="{% url 'ticket' wh_slug ticket.pk%}" class='secondary-btn'>Edit</a>
 </div>
 <br>
 {% endfor %}

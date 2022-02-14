@@ -17,7 +17,7 @@ urlpatterns = [
          ),
     path('create-trip', CreateTicket.as_view(), name='trip_creation'),
     path('create-trip/<str:manifest>', CreateTicket.as_view(), name='trip_creation'),
-    # path('file/<int:file_id>/<str:file_name>', CreateTicket.as_view(), name='trip_creation'),
+    path('delete/<int:tick_id>', DeleteTicket.as_view(), name='delete'),
     path('logout', logout_user, name='logout'),
 ]
 

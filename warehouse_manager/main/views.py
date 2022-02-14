@@ -11,7 +11,7 @@ from django.views.generic import ListView, CreateView, FormView
 from django.contrib.auth import logout
 
 from .django_roser import RoseRocket
-from .forms import TripCreation, WarehouseReplyForm
+from .forms import TripCreation, WarehouseReplyForm, DeleteForm
 from .models import *
 from .utils import DataMixin
 
@@ -29,6 +29,7 @@ def pageNotFound(request, exception):
 
 
 class WarehouseCommonPage(LoginRequiredMixin, DataMixin, ListView):
+    """Page with list of warehouses"""
     model = Warehouses
     login_url = 'login'
     redirect_field_name = 'next'
@@ -37,6 +38,7 @@ class WarehouseCommonPage(LoginRequiredMixin, DataMixin, ListView):
 
 
 class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
+    """Page for one warehouse with list of tickets with short description"""
     model = Tickets
     login_url = 'login'
     redirect_field_name = 'next'
@@ -81,7 +83,7 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
                 warehouse__slug=self.kwargs['wh_slug'], status='Completed', completed__date=completion_date)
         else:
             return self.model.objects.filter(
-                warehouse__slug=self.kwargs['wh_slug']).exclude(status='Completed')
+                warehouse__slug=self.kwargs['wh_slug']).exclude(status='Completed').exclude(status='Deleted')
 
 
 class HomeView(LoginRequiredMixin, DataMixin, ListView):
@@ -96,6 +98,7 @@ class HomeView(LoginRequiredMixin, DataMixin, ListView):
 
 
 class TicketsView(LoginRequiredMixin, DataMixin, ListView):
+    """Details of one ticket"""
     model = Tickets
     login_url = 'login'
     next_page = 'next'
@@ -118,7 +121,9 @@ class TicketsView(LoginRequiredMixin, DataMixin, ListView):
                                           [url.external_url for url in associated_files if bool(url.external_url)],
                                           start=1,
                                       ),
-                                      wh_slug=self.kwargs['wh_slug']
+                                      wh_slug=self.kwargs['wh_slug'],
+                                      form=WarehouseReplyForm(),
+                                      tick_id=self.kwargs['tick_id']
                                       )
         return dict(list(context.items()) + list(c_def.items()))
 
@@ -152,7 +157,7 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
                                     consol=data['consol'],
                                     due_time=data['incoming_due_time'],
                                     created=datetime.datetime.now(),
-                                    instructions=data['incoming_instructions']+data['outgoing_instructions'],
+                                    instructions=data['incoming_instructions'] + data['outgoing_instructions'],
                                     user=self.request.user,
                                     warehouse=data['incoming'],
                                     status='Pending'
@@ -250,7 +255,24 @@ class CreateTicket(LoginRequiredMixin, DataMixin, FormView):
         return initial
 
 
-class WarehouseReplyFormView(LoginRequiredMixin, FormView):
+class DeleteTicket(LoginRequiredMixin, View):
+    login_url = 'login'
+    next_page = 'next'
+    form_class = DeleteForm
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            ticket = Tickets.objects.get(id=kwargs['tick_id'])
+            ticket.status = 'Deleted'
+            ticket.completed = datetime.datetime.now()
+            ticket.save()
+            return render(request, 'main/deleted.html', {'pk': kwargs['tick_id']})
+        else:
+            return HttpResponseForbidden
+
+
+class WarehouseReplyFormView(LoginRequiredMixin, DataMixin, FormView):
     model = WarehouseReply
     login_url = 'login'
     next_page = 'next'
@@ -284,6 +306,14 @@ class WarehouseReplyFormView(LoginRequiredMixin, FormView):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Reply',
+                                      wh_slug=self.kwargs['wh_slug'],
+                                      tick_id=self.kwargs['tick_id']
+                                      )
+        return dict(list(context.items()) + list(c_def.items()))
 
     # def get(self, request, *args, **kwargs):
     #     print(kwargs)

@@ -1,6 +1,10 @@
 {% extends 'main/base.html'%}
 {% load static %}
 
+{% block headerbutton %}
+    <a class="menu-arrow" style="font-size:30px;cursor:pointer" href="{% url 'ticket' wh_slug tick_id %}"><img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}"></a>
+{% endblock headerbutton %}
+
 {% block content %}
 <form method="post" enctype="multipart/form-data"
 onsubmit="return confirm('Are you sure you want to close the ticket?');">{% csrf_token %}

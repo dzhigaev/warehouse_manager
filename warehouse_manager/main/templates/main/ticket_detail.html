@@ -2,19 +2,46 @@
 {% load static %}
 
 {% block headerbutton %}
-        <a class="menu-arrow" style="font-size:30px;cursor:pointer" href="{% url 'warehouse' wh_slug %}"><img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}" ></a>
+        <a class="menu-arrow" style="font-size:30px;cursor:pointer" href="{% url 'warehouse' wh_slug %}"><img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}"></a>
 {% endblock headerbutton %}
 
 {% block content %}
-<a href="{% url 'reply' wh_slug ticket.pk%}" class='info-btn'>Complete</a>
-<a href="{% url 'ticket' wh_slug ticket.pk%}" class='secondary-btn'>Edit</a>
+{% if ticket.status != 'Completed' %}
+<div class="controls">
+    <div id="reply" class="modal">
+        <form class="modal-content animate" method="post" enctype="multipart/form-data"
+            action="{% url 'reply' wh_slug tick_id %}"
+            onsubmit="return confirm('Are you sure you want to close the ticket?');">{% csrf_token %}
+            <div class="imgcontainer">
+                <span onclick="document.getElementById('reply').style.display='none'" class="close" title="Close Modal">×</span>
+            </div>
+            <div class="my_container">
+                {{form.as_p}}
+                <input class="success-btn" type="submit" value="Complete">
+            </div>
+        </form>
+    </div>
+    <input onclick="document.getElementById('reply').style.display='block'" class='success-btn' value="Complete">
+    <form action="{% url 'delete' ticket.pk%}" method="post" onsubmit="return confirm ('Are you sure?')">
+        {% csrf_token %}
+        <input type="submit" value="Delete" class="danger-btn">
+    </form>
+</div>
+{% endif %}
 <div class="tableContain">
+    {% if ticket.status == 'Completed' %}
+
+    <div>Status:</div>
+    <div><b>{{ticket.status}}</b></div>
+    {% endif %}
     <div>Ticket#</div>
     <div><b>{{ticket.pk}}</b></div>
     <div>Due by:</div>
     <div><b>{{ticket.due_time}}</b></div>
     <div>Instructions:</div>
     <div><b>{{ticket.type}}</b></div>
+    <div>Order:</div>
+    <div><b>{{ticket.order_nums}}</b></div>
     <div>Truck/Trailer:</div>
     <div><b>{{ticket.truck}}, {{ticket.trailer}}</b></div>
     <div>Trailer Status:</div>
@@ -34,9 +61,7 @@
         <div><a href="{{url}}" class="secondary-btn" target="_blank">Show document# {{count}}</a></div>
         {% endfor %}
     </div>
-
     <div>Files:</div>
-
     <div>
         {% for file, format  in ticket_files.items %}
         {% if format == 'pdf' %}
@@ -46,7 +71,12 @@
         {% else %}
                 <div>No files were added</div>
         {% endif %}
+        {% endfor %}
     </div>
-    {% endfor %}
+
+</div>
 
 {% endblock content %}
+
+{% block reply %}
+{% endblock reply %}

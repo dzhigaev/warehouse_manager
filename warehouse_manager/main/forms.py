@@ -40,4 +40,7 @@ class WarehouseReplyForm(forms.Form):
     comments = forms.CharField(widget=forms.Textarea, required=False)
     files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
+class DeleteForm(forms.Form):
+    pass
+
 
