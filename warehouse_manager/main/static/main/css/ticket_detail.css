@@ -5,13 +5,13 @@ padding: 10px;
 overflow: auto;
 }*/
 .tableContain {
-display: grid;
-grid-template-columns: 1fr 1fr;
-grid-template-rows: repeat(7, 1fr);
-grid-column-gap: 10px;
-grid-row-gap: 7px;
-width:50%;
-margin: 20px auto auto auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(7, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:50%;
+    margin: 20px auto auto auto;
 }
 
 .detailed-image{
@@ -23,11 +23,91 @@ margin: 20px auto auto auto;
     width:25px
 }
 
+/*.controls {
+    float:None;
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+}*/
+
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0, 0, 0);
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    /*style the model content box*/
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto 15% auto;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    /*style the close button*/
+    .close {
+        position: absolute;
+        right: 25px;
+        top: 0;
+        color: #000;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: red;
+        cursor: pointer;
+    }
+
+    /* add zoom animation*/
+    .animate {
+        -webkit-animation: animatezoom 0.6s;
+        animation: animatezoom 0.6s
+    }
+
+    @-webkit-keyframes animatezoom {
+        from {
+            -webkit-transform: scale(0)
+        }
+        to {
+            -webkit-transform: scale(1)
+        }
+    }
+
+    @keyframes animatezoom {
+        from {
+            transform: scale(0)
+        }
+        to {
+            transform: scale(1)
+        }
+    }
+
 @media screen and (max-width: 500px) {
     .tableContain {
         margin: auto;
         width: 100%;
         padding: 10px;
+    }
+    input[value=Complete]{
+            display: block;
+            float: none;
+            width: 100%;
+            resize: vertical;
+            margin: 5px;
+            text-align: center;
     }
 
 }
