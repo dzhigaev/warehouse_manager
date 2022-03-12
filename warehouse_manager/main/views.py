@@ -349,14 +349,5 @@ class TripMonitor(LoginRequiredMixin, DataMixin, ListView):
     rose_rocket = RoseRocket()
 
 
-class SaveUs(TemplateView):
-    template_name = 'main/saveUkraine.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
-    #
-    # def get(self, request):
-    #     return reverse(request, 'main/saveUkraine.html')
 
 
