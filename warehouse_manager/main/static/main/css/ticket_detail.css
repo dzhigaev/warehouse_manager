@@ -4,10 +4,25 @@ width: 80%;
 padding: 10px;
 overflow: auto;
 }*/
+
+.controls input[id=complete], input[id=delete]{
+text-align: center;
+
+}
 .tableContain {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: repeat(7, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:50%;
+    margin: 20px auto auto auto;
+}
+
+.reply {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 0.1fr 0.4fr;
     grid-column-gap: 10px;
     grid-row-gap: 7px;
     width:50%;
@@ -23,14 +38,15 @@ overflow: auto;
     width:25px
 }
 
-/*.controls {
+.controls {
     float:None;
     display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    width: 50%;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     grid-column-gap: 10px;
     grid-row-gap: 7px;
-}*/
+}
 
 
     .modal {
@@ -109,5 +125,12 @@ overflow: auto;
             margin: 5px;
             text-align: center;
     }
-
+    .controls {
+    width: 100%;
+    }
+    .reply {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
 }

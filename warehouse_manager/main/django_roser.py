@@ -1,8 +1,8 @@
 import os
 from requests import Session
 import datetime
-import time
 import json
+from .models import RRToken
 
 
 class RoseRocket:
@@ -24,18 +24,35 @@ class RoseRocket:
         self.next_week = datetime.datetime.strftime(self.next_week, '%Y-%m-%dT00:00:00-05:00')
 
     def login(self):
-        self.post = self.s.post(self.login_post_url, headers=self.s.headers, json=self.login_creds).json()
-
-        self.data = str(self.post["data"]["token_type"]) + " " + str(self.post["data"]["token"])
-        self.s.headers.update({
-            "content-type": "application/json",
-            "accept": "application/json",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
-                          "Chrome/90.0.4430.212 Safari/537.36",
-            "authorization": self.data,
-            "x-datadog-trace-id": "4823135534527647769",
-            "x-datadog-parent-id": "3792996712835868751"
-        })
+        rr_token = RRToken.objects.last()
+        print(rr_token)
+        if rr_token.login_time + rr_token.expiary_date > datetime.datetime.now():
+            self.post = self.s.post(self.login_post_url, headers=self.s.headers, json=self.login_creds).json()
+            self.data = str(self.post["data"]["token_type"]) + " " + str(self.post["data"]["token"])
+            self.s.headers.update({
+                "content-type": "application/json",
+                "accept": "application/json",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/90.0.4430.212 Safari/537.36",
+                "authorization": self.data,
+                "x-datadog-trace-id": "4823135534527647769",
+                "x-datadog-parent-id": "3792996712835868751"
+            })
+            new_token = RRToken(token=str(self.post["data"]["token"]),
+                                expiary_date=self.post['data']['expires_in'])
+            new_token.save()
+        else:
+            self.data = rr_token.token
+            self.s.headers.update({
+                "content-type": "application/json",
+                "accept": "application/json",
+                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                              "Chrome/90.0.4430.212 Safari/537.36",
+                "authorization": f'Bearer {self.data}',
+                "x-datadog-trace-id": "4823135534527647769",
+                "x-datadog-parent-id": "3792996712835868751"
+            })
+        #todo save time of last login to RR and save tocken. Refresh after time expires
 
     def get_active_manifests(self):
         self.login()
@@ -78,9 +95,11 @@ class RoseRocket:
         }
         return self.s.get(url, params=params, headers=self.s.headers).json()['data']
 
+    def valid_token(self, token):
+        print(self.s.get(os.environ.get('ROSER_LOGIN_POST_URL'), ))
+
 
 if __name__ == '__main__':
     r = RoseRocket()
-    manifests = r.get_manifest_files('899089d7-a6b4-48fd-b0d3-8a1e27f1be30')
-    print(manifests)
+
 

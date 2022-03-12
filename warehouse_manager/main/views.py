@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseNotFound
 from django.views import View
-from django.views.generic import ListView, CreateView, FormView
+from django.views.generic import ListView, CreateView, FormView, TemplateView
 from django.contrib.auth import logout
 
 from .django_roser import RoseRocket
@@ -123,7 +123,10 @@ class TicketsView(LoginRequiredMixin, DataMixin, ListView):
                                       ),
                                       wh_slug=self.kwargs['wh_slug'],
                                       form=WarehouseReplyForm(),
-                                      tick_id=self.kwargs['tick_id']
+                                      tick_id=self.kwargs['tick_id'],
+                                      reply=WarehouseReply.objects.filter(ticket=self.kwargs['tick_id']).first(),
+                                      reply_doc=ReplyImage.objects.filter(
+                                          reply=WarehouseReply.objects.filter(ticket=self.kwargs['tick_id']).first())
                                       )
         return dict(list(context.items()) + list(c_def.items()))
 
@@ -315,6 +318,45 @@ class WarehouseReplyFormView(LoginRequiredMixin, DataMixin, FormView):
                                       )
         return dict(list(context.items()) + list(c_def.items()))
 
-    # def get(self, request, *args, **kwargs):
-    #     print(kwargs)
-    #     print(args)
+#todo create view for completed tickets to show warehouse reply
+
+
+class CompletedTickets(LoginRequiredMixin, DataMixin, ListView):
+    login_url = 'login'
+    next_page = 'next'
+    template_name = 'main/ticket_details.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Ticket details',
+                                      ticket_files=files,
+                                      ticket_urls=enumerate(
+                                          [url.external_url for url in associated_files if bool(url.external_url)],
+                                          start=1,
+                                      ),
+                                      wh_slug=self.kwargs['wh_slug'],
+                                      tick_id=self.kwargs['tick_id']
+                                      )
+        return dict(list(context.items()) + list(c_def.items()))
+
+
+
+class TripMonitor(LoginRequiredMixin, DataMixin, ListView):
+    login_url = 'login'
+    next_page = 'next'
+    template_name = 'main/trip_monitor.html'
+    #todo create reddis/celery automation update of loads from RR
+    rose_rocket = RoseRocket()
+
+
+class SaveUs(TemplateView):
+    template_name = 'main/saveUkraine.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+    #
+    # def get(self, request):
+    #     return reverse(request, 'main/saveUkraine.html')
+
+

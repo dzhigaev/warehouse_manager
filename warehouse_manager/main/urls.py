@@ -15,9 +15,12 @@ urlpatterns = [
          WarehouseReplyFormView.as_view(),
          name='reply'
          ),
+    path('warehouse/<slug:wh_slug>/ticket/<int:tick_id>/completed', TicketsView.as_view(), name='completed'),
     path('create-trip', CreateTicket.as_view(), name='trip_creation'),
     path('create-trip/<str:manifest>', CreateTicket.as_view(), name='trip_creation'),
     path('delete/<int:tick_id>', DeleteTicket.as_view(), name='delete'),
+    path('trip-monitor', DeleteTicket.as_view(), name='monitor'),
     path('logout', logout_user, name='logout'),
+    path('save-ukraine/', SaveUs.as_view(), name='save'),
 ]
 

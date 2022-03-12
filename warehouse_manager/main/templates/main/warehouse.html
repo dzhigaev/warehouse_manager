@@ -93,7 +93,11 @@
 
             </tbody>
         </table>
+    {% if ticket.status == 'Completed' %}
+    <a href="{% url 'completed' wh_slug ticket.pk%}" class='info-btn'>More details</a>
+    {% else %}
     <a href="{% url 'ticket' wh_slug ticket.pk%}" class='info-btn'>More details</a>
+    {% endif %}
 </div>
 <br>
 {% endfor %}
