@@ -21,6 +21,5 @@ urlpatterns = [
     path('delete/<int:tick_id>', DeleteTicket.as_view(), name='delete'),
     path('trip-monitor', DeleteTicket.as_view(), name='monitor'),
     path('logout', logout_user, name='logout'),
-    path('save-ukraine/', SaveUs.as_view(), name='save'),
 ]
 

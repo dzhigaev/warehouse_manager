@@ -131,6 +131,6 @@ class Trailers(models.Model):
 
 class RRToken(models.Model):
     token = models.CharField(max_length=500, blank=True)
-    expiary_date = models.DateTimeField(blank=True)
+    expiary_date = models.IntegerField()
     login_time = models.DateTimeField(blank=False, auto_now=True)
 

@@ -2,6 +2,9 @@ import os
 from requests import Session
 import datetime
 import json
+
+from django.utils import timezone
+
 from .models import RRToken
 
 
@@ -25,8 +28,9 @@ class RoseRocket:
 
     def login(self):
         rr_token = RRToken.objects.last()
-        print(rr_token)
-        if rr_token.login_time + rr_token.expiary_date > datetime.datetime.now():
+        if rr_token.login_time + datetime.timedelta(
+                seconds=rr_token.expiary_date
+        ) < timezone.make_aware(datetime.datetime.now(), timezone.get_default_timezone()):
             self.post = self.s.post(self.login_post_url, headers=self.s.headers, json=self.login_creds).json()
             self.data = str(self.post["data"]["token_type"]) + " " + str(self.post["data"]["token"])
             self.s.headers.update({
@@ -52,7 +56,22 @@ class RoseRocket:
                 "x-datadog-trace-id": "4823135534527647769",
                 "x-datadog-parent-id": "3792996712835868751"
             })
-        #todo save time of last login to RR and save tocken. Refresh after time expires
+            me_try = self.s.get('https://millhouse.roserocket.com/api/v1/me', headers=self.s.headers).json()
+            if me_try.get('data') is None:
+                self.post = self.s.post(self.login_post_url, headers=self.s.headers, json=self.login_creds).json()
+                self.data = str(self.post["data"]["token_type"]) + " " + str(self.post["data"]["token"])
+                self.s.headers.update({
+                    "content-type": "application/json",
+                    "accept": "application/json",
+                    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                                  "Chrome/90.0.4430.212 Safari/537.36",
+                    "authorization": self.data,
+                    "x-datadog-trace-id": "4823135534527647769",
+                    "x-datadog-parent-id": "3792996712835868751"
+                })
+                new_token = RRToken(token=str(self.post["data"]["token"]),
+                                    expiary_date=self.post['data']['expires_in'])
+                new_token.save()
 
     def get_active_manifests(self):
         self.login()
