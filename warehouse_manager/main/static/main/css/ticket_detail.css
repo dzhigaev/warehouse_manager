@@ -4,14 +4,59 @@ width: 80%;
 padding: 10px;
 overflow: auto;
 }*/
+
+.main-layout{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
+}
+
+.controls input[id=complete], input[id=delete]{
+text-align: center;
+}
+
 .tableContain {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: repeat(7, 1fr);
     grid-column-gap: 10px;
     grid-row-gap: 7px;
-    width:50%;
+    width:100%;
     margin: 20px auto auto auto;
+    padding: 10px
+}
+
+#ticket-details {
+background:rgba(42,119,255,0.12);
+border: 3px solid rgba(28,110,164,0.18);
+border-radius: 15px;
+}
+
+#reply-details{
+background:rgba(42,119,255,0.12);
+border: 3px solid rgba(28,110,164,0.18);
+border-radius: 15px;
+}
+
+.tableDocs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:100%;
+    margin: 20px auto auto auto;
+    padding: 10px
+}
+
+
+.reply {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 0.1fr 0.4fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:100%;
+    margin: 20px auto auto auto;
+    padding:10px
 }
 
 .detailed-image{
@@ -23,80 +68,88 @@ overflow: auto;
     width:25px
 }
 
-/*.controls {
+.controls {
     float:None;
     display:grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    width: 50%;
+    grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     grid-column-gap: 10px;
     grid-row-gap: 7px;
-}*/
+}
 
 
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgb(0, 0, 0);
-        background-color: rgba(0, 0, 0, 0.4);
-        padding-top: 60px;
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+/*style the model content box*/
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/*style the close button*/
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+/* add zoom animation*/
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {
+        -webkit-transform: scale(0)
     }
-
-    /*style the model content box*/
-    .modal-content {
-        background-color: #fefefe;
-        margin: 5% auto 15% auto;
-        border: 1px solid #888;
-        width: 80%;
+    to {
+        -webkit-transform: scale(1)
     }
+}
 
-    /*style the close button*/
-    .close {
-        position: absolute;
-        right: 25px;
-        top: 0;
-        color: #000;
-        font-size: 35px;
-        font-weight: bold;
+@keyframes animatezoom {
+    from {
+        transform: scale(0)
     }
+    to {
+        transform: scale(1)
+    }
+}
 
-    .close:hover,
-    .close:focus {
-        color: red;
-        cursor: pointer;
-    }
 
-    /* add zoom animation*/
-    .animate {
-        -webkit-animation: animatezoom 0.6s;
-        animation: animatezoom 0.6s
-    }
-
-    @-webkit-keyframes animatezoom {
-        from {
-            -webkit-transform: scale(0)
-        }
-        to {
-            -webkit-transform: scale(1)
-        }
-    }
-
-    @keyframes animatezoom {
-        from {
-            transform: scale(0)
-        }
-        to {
-            transform: scale(1)
-        }
-    }
 
 @media screen and (max-width: 500px) {
     .tableContain {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
+    .tableDocs {
         margin: auto;
         width: 100%;
         padding: 10px;
@@ -109,5 +162,13 @@ overflow: auto;
             margin: 5px;
             text-align: center;
     }
-
+    .controls {
+    width: 100%;
+    }
+    .reply {
+        margin: auto;
+        width: 100%;
+        padding: 10px;
+    }
 }
+

@@ -2,7 +2,9 @@
 {% load static %}
 
 {% block headerbutton %}
-        <a class="menu-arrow" style="font-size:30px;cursor:pointer" href="{% url 'warehouse' wh_slug %}"><img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}"></a>
+        <a class="menu-arrow" style="font-size:30px;cursor:pointer" href="{% url 'warehouse' wh_slug %}">
+            <img class="back-icon" src="{% static 'main/images/chevron-left.svg' %}">
+        </a>
 {% endblock headerbutton %}
 
 {% block content %}
@@ -21,59 +23,80 @@
             </div>
         </form>
     </div>
-    <input onclick="document.getElementById('reply').style.display='block'" class='success-btn' value="Complete">
-    <form action="{% url 'delete' ticket.pk%}" method="post" onsubmit="return confirm ('Are you sure?')">
+    <form action="{% url 'delete' ticket.pk%}" method="post"
+          onsubmit="return confirm ('Are you sure you want to delete ticket#{{ticket.pk}}?')"
+    style="display:grid">
         {% csrf_token %}
-        <input type="submit" value="Delete" class="danger-btn">
+        <input id="delete" type="submit" value="Delete" class="danger-btn">
     </form>
+    <input id="complete" onclick="document.getElementById('reply').style.display='block'"
+           class='success-btn' value="Complete">
+
 </div>
 {% endif %}
-<div class="tableContain">
-    {% if ticket.status == 'Completed' %}
-
-    <div>Status:</div>
-    <div><b>{{ticket.status}}</b></div>
-    {% endif %}
-    <div>Ticket#</div>
-    <div><b>{{ticket.pk}}</b></div>
-    <div>Due by:</div>
-    <div><b>{{ticket.due_time}}</b></div>
-    <div>Instructions:</div>
-    <div><b>{{ticket.type}}</b></div>
-    <div>Order:</div>
-    <div><b>{{ticket.order_nums}}</b></div>
-    <div>Truck/Trailer:</div>
-    <div><b>{{ticket.truck}}, {{ticket.trailer}}</b></div>
-    <div>Trailer Status:</div>
-    {% if ticket.consol %}
-        <div><b>Consolidated</b></div>
-    {% else %}
-        <div><b>Dedicated</b></div>
-    {% endif %}
-    <div>Additional details:</div>
-    <div><b>{{ticket.instructions}}</b></div>
-    <div>Requested by:</div>
-    <div><b>{{ticket.user}}</b></div>
-    <div>Documents:</div>
-
-    <div>
-        {% for count, url in ticket_urls %}
-        <div><a href="{{url}}" class="secondary-btn" target="_blank">Show document# {{count}}</a></div>
-        {% endfor %}
-    </div>
-    <div>Files:</div>
-    <div>
-        {% for file, format  in ticket_files.items %}
-        {% if format == 'pdf' %}
-            <a class="secondary-btn" href="{{ file.file.url }}"> Show: {{file.file}}</a>
-        {%elif format == 'jpg' %}
-                <div><img class="detailed-image" src="{{ file.file.url}}"></div>
-        {% else %}
-                <div>No files were added</div>
+<div class="main-layout">
+    <div class="tableContain" id="ticket-details">
+        <h1> Ticket info:</h1>
+        <div></div>
+        {% if ticket.status == 'Completed' %}
+        <div>Status:</div>
+        <div><b>{{ticket.status}}</b></div>
         {% endif %}
-        {% endfor %}
+        <div>Ticket#</div>
+        <div><b>{{ticket.pk}}</b></div>
+        <div>Due by:</div>
+        <div><b>{{ticket.due_time}}</b></div>
+        <div>Instructions:</div>
+        <div><b>{{ticket.type}}</b></div>
+        <div>Order:</div>
+        <div><b>{{ticket.order_nums}}</b></div>
+        <div>Truck/Trailer:</div>
+        <div><b>{{ticket.truck}}, {{ticket.trailer}}</b></div>
+        <div>Trailer Status:</div>
+        {% if ticket.consol %}
+            <div><b>Consolidated</b></div>
+        {% else %}
+            <div><b>Dedicated</b></div>
+        {% endif %}
+        <div>Additional details:</div>
+        <div><b>{{ticket.instructions}}</b></div>
+        <div>Requested by:</div>
+        <div><b>{{ticket.user}}</b></div>
+        <div>Documents:</div>
+        <div>
+            {% for count, url in ticket_urls %}
+            <div><a href="{{url}}" class="secondary-btn" target="_blank">Show document# {{count}}</a></div>
+            {% endfor %}
+        </div>
+        <div>Files:</div>
+        <div>
+            {% for file, format  in ticket_files.items %}
+            {% if format == 'pdf' %}
+                <a class="secondary-btn" href="{{ file.file.url }}"> Show: {{file.file}}</a>
+            {%elif format == 'jpg' %}
+                    <div><img   src="{{ file.file.url}}" class="detailed-image"></div>
+            {% else %}
+                    <div>No files were added</div>
+            {% endif %}
+            {% endfor %}
+        </div>
     </div>
-
+    {% if ticket.status == 'Completed' %}
+    <div class="reply" id="reply-details">
+        <h1> Warehouse update:</h1>
+        <div></div>
+        <div>Update by:</div>
+        <div>{{reply.user}}</div>
+        <div>Comments:</div>
+        <div>{{reply.comments}}</div>
+        <div>Images:</div>
+        <div>
+        {% for image in reply_doc %}
+            <img src="{{image.file.url}}" class="detailed-image">
+        {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 {% endblock content %}

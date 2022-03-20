@@ -113,3 +113,24 @@ class Trailers(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# class ActiveTrips(models.Model):
+#     manifest = models.CharField(db_index=True, unique=True, blank=False)
+
+
+# class TripLocations(models.Model):
+#     location = models.CharField()
+#     input_time = models.DateTimeField()
+#     location_time = models.DateTimeField()
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL,
+#                              on_delete=models.DO_NOTHING)
+#     eta = models.DateTimeField()
+#todo add location update by reddis/celery every hour
+
+
+class RRToken(models.Model):
+    token = models.CharField(max_length=500, blank=True)
+    expiary_date = models.IntegerField()
+    login_time = models.DateTimeField(blank=False, auto_now=True)
+
