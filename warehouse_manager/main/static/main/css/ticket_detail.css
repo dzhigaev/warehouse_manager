@@ -148,10 +148,10 @@ border-radius: 15px;
     .main-layout{
         display: block;
         float: none;
-        width: 100%;
+        width: auto;
         resize: vertical;
         margin: 5px;
-        text-align: center;
+        text-align: left;
 
     }
     .tableContain {

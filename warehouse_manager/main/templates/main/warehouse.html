@@ -2,25 +2,39 @@
 {% load static %}
 
 {% block buttons_for_warehouses %}
-<details class="filter">
-    <summary>Filter Search</summary>
-    <div class="status_selector">
-
-{% if status_selected == 'Pending' %}
-    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
-    <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
-    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
-    {% elif status_selected == 'Completed' %}
-    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
-    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
-    <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
-    {% else %}
-    <a class= 'primary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
-    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
-    <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
-    {% endif %}
+<div class="warehouse-header">
+    <div class="warehouse-title">
+        <h3>{{warehouse.name}} Tickets:</h3>
     </div>
-    </details>
+    <div class="search">
+        <form action="" method="get">
+            <input type="charfield">
+            <input type="submit">
+        </form>
+    </div>
+    <div class="div-filter">
+        <details class="filter">
+        <summary>Filter Search</summary>
+        <div class="status_selector">
+
+    {% if status_selected == 'Pending' %}
+        <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
+        <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
+        <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
+        {% elif status_selected == 'Completed' %}
+        <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
+        <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
+        <a class= 'primary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
+        {% else %}
+        <a class= 'primary-btn' href="{% url 'warehouse' wh_slug %}">All</a>
+        <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Pending">Pending</a>
+        <a class= 'secondary-btn' href="{% url 'warehouse' wh_slug%}?status=Completed">Completed</a>
+        {% endif %}
+        </div>
+        </details>
+    </div>
+
+</div>
 {% endblock buttons_for_warehouses %}
 
 {% block content %}
@@ -34,7 +48,7 @@
       <input class="info-btn" type="submit" value="Search">
     </form>
 {% endif %}
-<p>{{warehouse.name}} Tickets:</p>
+
 
 
 {% for ticket, files in file_dict.items %}
