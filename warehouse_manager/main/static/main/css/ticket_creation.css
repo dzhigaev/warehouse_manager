@@ -31,7 +31,7 @@ form label {
 }
 
 @media screen and (max-width: 500px) {
-  .td, input[type=submit] {
+  .td, input[type=submit]{
     width: 100%;
     margin: 10px 0px 10px px;
   }

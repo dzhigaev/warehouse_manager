@@ -7,6 +7,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 from django.http import HttpResponseForbidden, HttpResponse, HttpResponseNotFound
 from django.views import View
+from django.db.models import Q
 from django.views.generic import ListView, CreateView, FormView, TemplateView
 from django.contrib.auth import logout
 
@@ -58,7 +59,6 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
                     else:
                         files[file] = 'jpg'
             context['file_dict'].update({tick: files})
-            # print(context['file_dict'])
 
         c_def = self.get_user_context(title='Ticket list',
                                       warehouse=Warehouses.objects.get(slug=self.kwargs['wh_slug']),
@@ -72,6 +72,22 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
     def get_queryset(self):
         status = self.request.GET.get('status', None)
         completion_date = self.request.GET.get('completed_at', None)
+        search = self.request.GET.get('search', None)
+        if search is not None:
+            try:
+                lookups = Q(pk=search)
+                result = self.model.objects.filter(
+                    lookups,
+                    warehouse__slug=self.kwargs['wh_slug'],
+                ).distinct()
+            except:
+                lookups = Q(manifest_num=search) | \
+                          Q(order_nums__icontains=search)
+                result = self.model.objects.filter(
+                    lookups,
+                    warehouse__slug=self.kwargs['wh_slug']
+                ).distinct()
+            return result
         if completion_date is None:
             completion_date = datetime.datetime.now()
 
@@ -318,7 +334,8 @@ class WarehouseReplyFormView(LoginRequiredMixin, DataMixin, FormView):
                                       )
         return dict(list(context.items()) + list(c_def.items()))
 
-#todo create view for completed tickets to show warehouse reply
+
+# todo create view for completed tickets to show warehouse reply
 
 
 class CompletedTickets(LoginRequiredMixin, DataMixin, ListView):
@@ -340,14 +357,9 @@ class CompletedTickets(LoginRequiredMixin, DataMixin, ListView):
         return dict(list(context.items()) + list(c_def.items()))
 
 
-
 class TripMonitor(LoginRequiredMixin, DataMixin, ListView):
     login_url = 'login'
     next_page = 'next'
     template_name = 'main/trip_monitor.html'
-    #todo create reddis/celery automation update of loads from RR
+    # todo create reddis/celery automation update of loads from RR
     rose_rocket = RoseRocket()
-
-
-
-

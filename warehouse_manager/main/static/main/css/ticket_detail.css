@@ -9,6 +9,7 @@ overflow: auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 10px;
+    margin: 10px;
 }
 
 .controls input[id=complete], input[id=delete]{
@@ -21,19 +22,19 @@ text-align: center;
     grid-column-gap: 10px;
     grid-row-gap: 7px;
     width:100%;
-    margin: 20px auto auto auto;
+    margin: 5px;
     padding: 10px
 }
 
 #ticket-details {
 background:rgba(42,119,255,0.12);
-border: 3px solid rgba(28,110,164,0.18);
+border: 1px solid #cfd6db;
 border-radius: 15px;
 }
 
 #reply-details{
 background:rgba(42,119,255,0.12);
-border: 3px solid rgba(28,110,164,0.18);
+border: 1px solid #cfd6db;
 border-radius: 15px;
 }
 
@@ -55,7 +56,7 @@ border-radius: 15px;
     grid-column-gap: 10px;
     grid-row-gap: 7px;
     width:100%;
-    margin: 20px auto auto auto;
+    margin: 5px;
     padding:10px
 }
 
@@ -144,14 +145,21 @@ border-radius: 15px;
 
 
 @media screen and (max-width: 500px) {
+    .main-layout{
+        display: block;
+        float: none;
+        width: auto;
+        resize: vertical;
+        margin: 5px;
+        text-align: left;
+
+    }
     .tableContain {
-        margin: auto;
-        width: 100%;
+        margin: 5px;
         padding: 10px;
     }
     .tableDocs {
-        margin: auto;
-        width: 100%;
+        margin: 5px;
         padding: 10px;
     }
     input[value=Complete]{
@@ -167,7 +175,6 @@ border-radius: 15px;
     }
     .reply {
         margin: auto;
-        width: 100%;
         padding: 10px;
     }
 }

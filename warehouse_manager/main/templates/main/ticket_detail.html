@@ -34,16 +34,16 @@
 
 </div>
 {% endif %}
+<h1 style="margin: 10px">Ticket# <b>{{ticket.pk}}</b></h1>
 <div class="main-layout">
     <div class="tableContain" id="ticket-details">
-        <h1> Ticket info:</h1>
+        <h2> Ticket info:</h2>
         <div></div>
         {% if ticket.status == 'Completed' %}
         <div>Status:</div>
         <div><b>{{ticket.status}}</b></div>
         {% endif %}
-        <div>Ticket#</div>
-        <div><b>{{ticket.pk}}</b></div>
+
         <div>Due by:</div>
         <div><b>{{ticket.due_time}}</b></div>
         <div>Instructions:</div>
@@ -83,7 +83,7 @@
     </div>
     {% if ticket.status == 'Completed' %}
     <div class="reply" id="reply-details">
-        <h1> Warehouse update:</h1>
+        <h2> Warehouse update:</h2>
         <div></div>
         <div>Update by:</div>
         <div>{{reply.user}}</div>
