@@ -37,7 +37,7 @@
 	font-family:Arial;
 	font-size:15px;
 	font-weight:bold;
-	padding:6px 24px;
+	padding:5px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #ffffff;
 	margin: 5px
@@ -83,6 +83,7 @@
 	padding:6px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #86ae47;
+	margin: 5px
 }
 .success-btn:hover {
 	background:linear-gradient(to bottom, #a5cc52 5%, #b8e356 100%);
@@ -108,6 +109,7 @@
 	padding:5px 24px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #528ecc;
+	margin: 5px
 }
 .info-btn:hover {
 	background:linear-gradient(to bottom, #378de5 5%, #79bbff 100%);
@@ -118,9 +120,37 @@
 	top:1px;
 }
 
+
+.danger-btn {
+	box-shadow:inset 0px 1px 0px 0px #f29c93;
+	background:linear-gradient(to bottom, #fe1a00 5%, #ce0100 100%);
+	background-color:#fe1a00;
+	border-radius:6px;
+	border:1px solid #d83526;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:15px;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #b23e35;
+	margin: 5px
+}
+.danger-btn:hover {
+	background:linear-gradient(to bottom, #ce0100 5%, #fe1a00 100%);
+	background-color:#ce0100;
+}
+.danger-btn:active {
+	position:relative;
+	top:1px;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   transition: background-color .5s;
+  margin: 0px;
 }
 
 .sidenav {
@@ -159,7 +189,6 @@ body {
 
 #main {
   transition: margin-left .5s;
-  padding: 16px;
 }
 
 
@@ -169,8 +198,9 @@ body {
 
 .header {
   overflow: hidden;
-  background-color: #f1f1f1;
-  padding: 20px 10px;
+  background-color: #ffffff;
+  padding: 3px 5px;
+  border: 1px solid #cfd6db;
 }
 
 .header a {
@@ -194,11 +224,12 @@ font-family: 'Squada One', regular;
   float: left;
   color: black;
   text-align: center;
-  padding: 12px;
+  padding: 16px;
   text-decoration: none;
-  font-size: 18px;
-  line-height: 25px;
+  font-size: 25px;
+  line-height: 18px;
   border-radius: 4px;
+  cursor:pointer;
 }
 
 .header a:hover {

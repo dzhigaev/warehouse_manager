@@ -1,43 +1,181 @@
-div.tableContain {
+/*div.tableContain {
 margin: auto;
-width: 60%;
+width: 80%;
 padding: 10px;
-overflow:hidden;
+overflow: auto;
+}*/
+
+.main-layout{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
+    margin: 10px;
 }
 
-table.unstyledTable {
-  border: 0px solid #000000;
-  text-align: left;
-}
-table.unstyledTable td, table.unstyledTable tr {
-  border: 0px solid #AAAAAA;
-  padding: 4px 3px;
-}
-table.unstyledTable tbody td {
-  font-size: 16px;
+.controls input[id=complete], input[id=delete]{
+text-align: center;
 }
 
-table.unstyledTable tr:nth-child(even) {
-  background: #D0E4F5;
+.tableContain {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:100%;
+    margin: 5px;
+    padding: 10px
+}
+
+#ticket-details {
+background:rgba(42,119,255,0.12);
+border: 1px solid #cfd6db;
+border-radius: 15px;
+}
+
+#reply-details{
+background:rgba(42,119,255,0.12);
+border: 1px solid #cfd6db;
+border-radius: 15px;
+}
+
+.tableDocs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:100%;
+    margin: 20px auto auto auto;
+    padding: 10px
 }
 
 
+.reply {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 0.1fr 0.1fr 0.4fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
+    width:100%;
+    margin: 5px;
+    padding:10px
+}
 
 .detailed-image{
     display:block;
-    width: 50%
+    width: 100%
 }
 
 .back-icon{
     width:25px
 }
 
-@media screen and (max-height: 500px) {
-    div.tableContain {
-        margin: auto;
-        width: 100%;
-        padding: 10px;
-        overflow:visible;
-    }
-
+.controls {
+    float:None;
+    display:grid;
+    width: 50%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    grid-column-gap: 10px;
+    grid-row-gap: 7px;
 }
+
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-top: 60px;
+}
+
+/*style the model content box*/
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto 15% auto;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+/*style the close button*/
+.close {
+    position: absolute;
+    right: 25px;
+    top: 0;
+    color: #000;
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: red;
+    cursor: pointer;
+}
+
+/* add zoom animation*/
+.animate {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s
+}
+
+@-webkit-keyframes animatezoom {
+    from {
+        -webkit-transform: scale(0)
+    }
+    to {
+        -webkit-transform: scale(1)
+    }
+}
+
+@keyframes animatezoom {
+    from {
+        transform: scale(0)
+    }
+    to {
+        transform: scale(1)
+    }
+}
+
+
+
+@media screen and (max-width: 500px) {
+    .main-layout{
+        display: block;
+        float: none;
+        width: auto;
+        resize: vertical;
+        margin: 5px;
+        text-align: left;
+
+    }
+    .tableContain {
+        margin: 5px;
+        padding: 10px;
+    }
+    .tableDocs {
+        margin: 5px;
+        padding: 10px;
+    }
+    input[value=Complete]{
+            display: block;
+            float: none;
+            width: 100%;
+            resize: vertical;
+            margin: 5px;
+            text-align: center;
+    }
+    .controls {
+    width: 100%;
+    }
+    .reply {
+        margin: auto;
+        padding: 10px;
+    }
+}
+

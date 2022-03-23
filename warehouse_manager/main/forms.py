@@ -1,5 +1,5 @@
 from django import forms
-from .models import Warehouses, Tickets, Trucks, Trailers
+from .models import Warehouses, Trucks, Trailers, WarehouseReply
 
 
 class MyLogin(forms.Form):
@@ -31,9 +31,15 @@ class TripCreation(forms.Form):
     consol = forms.BooleanField(required=False, help_text='If trailer going to be consolidated mark this checkmark')
 
     files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
-    files_url = forms.URLField(widget=forms.URLInput(attrs={'multiple': True}), required=False)
+    files_url = forms.CharField(widget=forms.URLInput(attrs={'multiple': True}), required=False)
     incoming_instructions = forms.CharField(widget=forms.Textarea, required=False)
     outgoing_instructions = forms.CharField(widget=forms.Textarea, required=False)
 
 
+class WarehouseReplyForm(forms.Form):
+    comments = forms.CharField(widget=forms.Textarea, required=False)
+    files = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
 
+
+class DeleteForm(forms.Form):
+    pass
