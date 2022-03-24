@@ -49,6 +49,11 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['file_dict'] = {}
+        r = self.request.GET.get('search', None)
+        if r is not None:
+            my_search = f'Search results for: {r}'
+        else:
+            my_search = ''
         for tick in context['ticks']:
             associated_files = tick.ticketimage_set.all()
             files = {}
@@ -65,7 +70,8 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
                                       wh_slug=self.kwargs['wh_slug'],
                                       # files=context['file_dict'],
                                       status_selected=self.request.GET.get('status', None),
-                                      today=datetime.date.strftime(datetime.date.today(), '%Y-%m-%d')
+                                      today=datetime.date.strftime(datetime.date.today(), '%Y-%m-%d'),
+                                      searching=my_search,
                                       )
         return dict(list(context.items()) + list(c_def.items()))
 
