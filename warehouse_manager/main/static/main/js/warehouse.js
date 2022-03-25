@@ -13,6 +13,10 @@ for (i = 0; i < coll.length; i++) {
   });
 }
 
+window.setTimeout( function() {
+  window.location.reload();
+}, 0.5*(60*1000));
+
 $('#date').datepicker().on('changeDate', function() {
          $(this).parent('form').submit();
    });
