@@ -39,9 +39,6 @@ class TicketImage(models.Model):
     file = models.FileField(blank=True, upload_to='ticket_files/%Y/%m/%d', max_length=255)
     external_url = models.URLField(blank=True)
 
-    # class Meta:
-    #     ordering = ['ticket']
-
     def __str__(self):
         return f'{self.pk}//{self.file}'
 
@@ -89,8 +86,6 @@ class Warehouses(models.Model):
     def get_absolute_url(self):
         return reverse('warehouse', kwargs={'wh_slug': self.slug})
 
-    # personel = models.
-
     class Meta:
         ordering = ['name', 'location']
 
@@ -115,22 +110,7 @@ class Trailers(models.Model):
         return self.name
 
 
-# class ActiveTrips(models.Model):
-#     manifest = models.CharField(db_index=True, unique=True, blank=False)
-
-
-# class TripLocations(models.Model):
-#     location = models.CharField()
-#     input_time = models.DateTimeField()
-#     location_time = models.DateTimeField()
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-#                              on_delete=models.DO_NOTHING)
-#     eta = models.DateTimeField()
-#todo add location update by reddis/celery every hour
-
-
 class RRToken(models.Model):
     token = models.CharField(max_length=500, blank=True)
     expiary_date = models.IntegerField()
     login_time = models.DateTimeField(blank=False, auto_now=True)
-

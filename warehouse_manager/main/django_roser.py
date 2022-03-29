@@ -120,5 +120,3 @@ class RoseRocket:
 
 if __name__ == '__main__':
     r = RoseRocket()
-
-

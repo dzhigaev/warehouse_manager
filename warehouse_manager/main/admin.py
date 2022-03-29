@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import *
+from .models import Tickets, Trucks, Trailers, Warehouses, WarehouseReply, TicketImage, RRToken
+
 
 class WarehousesAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'location')

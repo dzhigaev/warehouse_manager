@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import *
+from .views import HomeView, LoginView, WarehouseView, WarehouseCommonPage, TicketsView, WarehouseReplyFormView, CreateTicket, DeleteTicket, logout_user
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -22,4 +22,3 @@ urlpatterns = [
     path('trip-monitor', DeleteTicket.as_view(), name='monitor'),
     path('logout', logout_user, name='logout'),
 ]
-

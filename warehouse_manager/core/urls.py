@@ -18,13 +18,12 @@ from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
-from main.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('main.urls'))
 ]
 
-handler404 = pageNotFound
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += staticfiles_urlpatterns()
+handler404 = 'main.views.pageNotFound'
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# urlpatterns += staticfiles_urlpatterns()

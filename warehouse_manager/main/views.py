@@ -13,7 +13,7 @@ from django.contrib.auth import logout
 
 from .django_roser import RoseRocket
 from .forms import TripCreation, WarehouseReplyForm, DeleteForm
-from .models import *
+from .models import Warehouses, Tickets, WarehouseReply, ReplyImage, TicketImage
 from .utils import DataMixin
 
 import requests
@@ -87,8 +87,7 @@ class WarehouseView(LoginRequiredMixin, DataMixin, ListView):
                     warehouse__slug=self.kwargs['wh_slug'],
                 ).distinct()
             except:
-                lookups = Q(manifest_num=search) | \
-                          Q(order_nums__icontains=search)
+                lookups = Q(manifest_num=search) | Q(order_nums__icontains=search)
                 result = self.model.objects.filter(
                     lookups,
                     warehouse__slug=self.kwargs['wh_slug']
@@ -342,25 +341,6 @@ class WarehouseReplyFormView(LoginRequiredMixin, DataMixin, FormView):
 
 
 # todo create view for completed tickets to show warehouse reply
-
-
-class CompletedTickets(LoginRequiredMixin, DataMixin, ListView):
-    login_url = 'login'
-    next_page = 'next'
-    template_name = 'main/ticket_details.html'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title='Ticket details',
-                                      ticket_files=files,
-                                      ticket_urls=enumerate(
-                                          [url.external_url for url in associated_files if bool(url.external_url)],
-                                          start=1,
-                                      ),
-                                      wh_slug=self.kwargs['wh_slug'],
-                                      tick_id=self.kwargs['tick_id']
-                                      )
-        return dict(list(context.items()) + list(c_def.items()))
 
 
 class TripMonitor(LoginRequiredMixin, DataMixin, ListView):

@@ -134,3 +134,8 @@ dmypy.json
 
 # Custom fields
 warehouse_manager/files/media
+.env.dev
+.env.prod
+.env.prod.db
+run.sh
+postgres/

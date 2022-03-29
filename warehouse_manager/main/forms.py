@@ -23,7 +23,7 @@ class TripCreation(forms.Form):
                                                                        format='MM-DD-YYYY HH:mm'),
                                             input_formats=['%Y-%m-%d %HH:%M'],
                                             required=True,
-                                            label='Outgoing ticket due time')
+                                            label='Incoming ticket due time')
 
     order_nums = forms.CharField(widget=forms.Textarea, required=False)
     truck = forms.ModelChoiceField(queryset=Trucks.objects.all(), required=False)
